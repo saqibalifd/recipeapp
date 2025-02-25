@@ -35,7 +35,17 @@ class ProductCard extends StatelessWidget {
                   Container(
                     height: screenHeight * .18,
                     width: screenWidth * .4,
-                    color: AppColors.blackColor.withValues(alpha: .2),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                          AppColors.blackColor.withOpacity(0.8),
+                          AppColors.blackColor.withOpacity(0.4),
+                          AppColors.transparent,
+                        ],
+                      ),
+                    ),
                   )
                 ],
               )),

@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         title: 'Recipies app',
         darkTheme: AppTheme.darkTheme,
         theme: AppTheme.lightTheme,
-        themeMode: ThemeMode.light,
+        themeMode: ThemeMode.dark,
         debugShowCheckedModeBanner: false,
         home: OnBoardingScreen());
   }

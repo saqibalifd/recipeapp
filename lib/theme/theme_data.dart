@@ -5,7 +5,7 @@ import '../constants/app_colors.dart';
 class AppTheme {
   static ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    primaryColor: AppColors.greenColor,
+    primaryColor: AppColors.whiteColor,
     scaffoldBackgroundColor: AppColors.whiteColor,
     cardColor: AppColors.greenColor,
     appBarTheme: const AppBarTheme(
@@ -72,7 +72,7 @@ class AppTheme {
 
   static ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
-    primaryColor: AppColors.redColor,
+    primaryColor: AppColors.blackColor,
     scaffoldBackgroundColor: AppColors.blackColor,
     cardColor: AppColors.greenColor,
     appBarTheme: const AppBarTheme(
