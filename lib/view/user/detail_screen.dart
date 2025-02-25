@@ -15,54 +15,57 @@ class _DetailScreenState extends State<DetailScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: screenWidth * .05),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: screenHeight * .09,
-            ),
-            Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.asset(
-                  height: screenHeight * .23,
-                  width: screenWidth * .85,
-                  fit: BoxFit.cover,
-                  AppImages.dummyImage1,
+      body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: screenWidth * .05),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: screenHeight * .09,
+              ),
+              Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.asset(
+                    height: screenHeight * .23,
+                    width: screenWidth * .85,
+                    fit: BoxFit.cover,
+                    AppImages.dummyImage1,
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: screenHeight * .03,
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: screenHeight * .03,
+                ),
+                child: Divider(),
               ),
-              child: Divider(),
-            ),
-            Text(
-              'Cacao Maca Wainut Milk',
-              style: theme.textTheme.headlineMedium,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: screenHeight * .03,
+              Text(
+                'Cacao Maca Wainut Milk',
+                style: theme.textTheme.headlineMedium,
               ),
-              child: Divider(),
-            ),
-            Text(
-              'Description',
-              style: theme.textTheme.headlineMedium,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: screenHeight * .02),
-              child: Text(
-                'your recipies are vary famous you can use it in your daily meals like brakefast etc',
-                style: theme.textTheme.bodySmall,
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: screenHeight * .03,
+                ),
+                child: Divider(),
               ),
-            )
-          ],
+              Text(
+                'Description',
+                style: theme.textTheme.headlineMedium,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: screenHeight * .02),
+                child: Text(
+                  'your recipies are vary famous you can use it in your daily meals like brakefast etc',
+                  style: theme.textTheme.bodySmall,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

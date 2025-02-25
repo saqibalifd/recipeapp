@@ -53,6 +53,8 @@ class ProductCard extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: screenWidth * .06),
           child: Text(
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             '$category . >$time min',
             style: theme.textTheme.bodyMedium,
           ),

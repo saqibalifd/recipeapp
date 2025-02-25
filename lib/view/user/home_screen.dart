@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:recipeapp/constants/app_colors.dart';
 import 'package:recipeapp/constants/app_icons.dart';
 import 'package:recipeapp/constants/app_images.dart';
 import 'package:recipeapp/view/user/detail_screen.dart';
@@ -101,67 +100,74 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           SizedBox(
             height: screenHeight * .03,
           ),
-          TabBar(
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicatorColor: AppColors.greenColor,
-              indicatorWeight: 3.0,
-              controller: tabController,
-              tabs: [
-                Padding(
-                  padding: EdgeInsets.only(bottom: screenHeight * .01),
-                  child: Text('Fast Food'),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(bottom: screenHeight * .01),
-                  child: Text('Drink'),
-                ),
-              ]),
+          TabBar(indicatorWeight: 3.0, controller: tabController, tabs: [
+            Padding(
+              padding: EdgeInsets.only(bottom: screenHeight * .01),
+              child: Text('Fast Food'),
+            ),
+            Padding(
+              padding: EdgeInsets.only(bottom: screenHeight * .01),
+              child: Text('Drink'),
+            ),
+          ]),
           SizedBox(
             height: screenHeight * .04,
           ),
           Expanded(
-            child: TabBarView(
-              controller: tabController,
-              children: [
-                GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 1.1,
+            child: AnimatedSwitcher(
+              duration: Duration(milliseconds: 500),
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+              child: TabBarView(
+                key: ValueKey<int>(tabController.index),
+                controller: tabController,
+                children: [
+                  GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 1.1,
+                    ),
+                    itemCount: fastFoodList.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () => Get.to(() => DetailScreen()),
+                        child: ProductCard(
+                          productImage: fastFoodList[index]['image'],
+                          title: fastFoodList[index]['title'],
+                          category: fastFoodList[index]['category'],
+                          time: fastFoodList[index]['time'],
+                        ),
+                      );
+                    },
                   ),
-                  itemCount: fastFoodList.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () => Get.to(() => DetailScreen()),
-                      child: ProductCard(
-                        productImage: fastFoodList[index]['image'],
-                        title: fastFoodList[index]['title'],
-                        category: fastFoodList[index]['category'],
-                        time: fastFoodList[index]['time'],
-                      ),
-                    );
-                  },
-                ),
-                GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 1.1,
+                  GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 1.1,
+                    ),
+                    itemCount: drinkList.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () => Get.to(() => DetailScreen()),
+                        child: ProductCard(
+                          productImage: drinkList[index]['image'],
+                          title: drinkList[index]['title'],
+                          category: drinkList[index]['category'],
+                          time: drinkList[index]['time'],
+                        ),
+                      );
+                    },
                   ),
-                  itemCount: drinkList.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () => Get.to(() => DetailScreen()),
-                      child: ProductCard(
-                        productImage: drinkList[index]['image'],
-                        title: drinkList[index]['title'],
-                        category: drinkList[index]['category'],
-                        time: drinkList[index]['time'],
-                      ),
-                    );
-                  },
-                ),
-              ],
+                ],
+              ),
             ),
           )
         ],
