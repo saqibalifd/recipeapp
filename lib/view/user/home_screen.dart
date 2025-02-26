@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:recipeapp/constants/app_icons.dart';
 import 'package:recipeapp/constants/app_images.dart';
+import 'package:recipeapp/controller/recipies_controller.dart';
 import 'package:recipeapp/view/user/detail_screen.dart';
 import 'package:recipeapp/widgets/card/product_card.dart';
 
@@ -72,6 +74,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     },
   ];
 
+  final RecipiesController recipiesController = Get.put(RecipiesController());
+
   late TabController tabController;
   @override
   void initState() {
@@ -114,60 +118,130 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             height: screenHeight * .04,
           ),
           Expanded(
-            child: AnimatedSwitcher(
-              duration: Duration(milliseconds: 500),
-              transitionBuilder: (Widget child, Animation<double> animation) {
-                return FadeTransition(
-                  opacity: animation,
-                  child: child,
-                );
-              },
-              child: TabBarView(
-                key: ValueKey<int>(tabController.index),
-                controller: tabController,
-                children: [
-                  GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1.1,
-                    ),
-                    itemCount: fastFoodList.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () => Get.to(() => DetailScreen()),
-                        child: ProductCard(
-                          productImage: fastFoodList[index]['image'],
-                          title: fastFoodList[index]['title'],
-                          category: fastFoodList[index]['category'],
-                          time: fastFoodList[index]['time'],
-                        ),
-                      );
-                    },
-                  ),
-                  GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1.1,
-                    ),
-                    itemCount: drinkList.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () => Get.to(() => DetailScreen()),
-                        child: ProductCard(
-                          productImage: drinkList[index]['image'],
-                          title: drinkList[index]['title'],
-                          category: drinkList[index]['category'],
-                          time: drinkList[index]['time'],
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
+            child: TabBarView(
+              key: ValueKey<int>(tabController.index),
+              controller: tabController,
+              children: [
+                StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('recipes')
+                      .where('category', isEqualTo: 'Fast Food')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    }
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return const Center(child: Text('No recipes found.'));
+                    }
+                    return GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: .8,
+                      ),
+                      itemCount: snapshot.data!.docs.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        final doc = snapshot.data!.docs[index];
+                        return GestureDetector(
+                          onTap: () => Get.to(() => DetailScreen()),
+                          child: ProductCard(
+                            productImage: doc['image'],
+                            title: doc['title'],
+                            category: doc['category'],
+                            time: doc['time'],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+                // Obx(
+                //   () {
+                //     if (recipiesController.isLoading == true) {
+                //       return CircularProgressIndicator();
+                //     } else if (recipiesController.recipiesDataList.isEmpty) {
+                //       Text('Data not found');
+                //     }
+
+                //     return GridView.builder(
+                //       gridDelegate:
+                //           const SliverGridDelegateWithFixedCrossAxisCount(
+                //         crossAxisCount: 2,
+                //         childAspectRatio: 1.1,
+                //       ),
+                //       itemCount: recipiesController.recipiesDataList.length,
+                //       shrinkWrap: true,
+                //       itemBuilder: (context, index) {
+                //         return GestureDetector(
+                //           onTap: () {
+                //             recipiesController.fetchRecipies();
+                //           },
+                //           // onTap: () => Get.to(() => DetailScreen()),
+                //           child: ProductCard(
+                //             productImage: recipiesController
+                //                 .recipiesDataList[index].image,
+                //             title: recipiesController
+                //                 .recipiesDataList[index].title,
+                //             category: recipiesController
+                //                 .recipiesDataList[index].category,
+                //             time: recipiesController
+                //                 .recipiesDataList[index].time,
+                //           ),
+                //           // child: ProductCard(
+                //           //   productImage: fastFoodList[index]['image'],
+                //           //   title: fastFoodList[index]['title'],
+                //           //   category: fastFoodList[index]['category'],
+                //           //   time: fastFoodList[index]['time'],
+                //           // ),
+                //         );
+                //       },
+                //     );
+                //   },
+                // ),
+                StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('recipes')
+                      .where('category', isEqualTo: 'Drink')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    }
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return const Center(child: Text('No recipes found.'));
+                    }
+                    return GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: .8,
+                      ),
+                      itemCount: snapshot.data!.docs.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        final doc = snapshot.data!.docs[index];
+                        return GestureDetector(
+                          onTap: () => Get.to(() => DetailScreen()),
+                          child: ProductCard(
+                            productImage: doc['image'],
+                            title: doc['title'],
+                            category: doc['category'],
+                            time: doc['time'],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ],
             ),
           )
         ],

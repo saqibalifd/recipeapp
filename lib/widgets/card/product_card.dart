@@ -27,7 +27,7 @@ class ProductCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(15),
               child: Stack(
                 children: [
-                  Image.asset(
+                  Image.network(
                       fit: BoxFit.cover,
                       height: screenHeight * .18,
                       width: screenWidth * .4,
