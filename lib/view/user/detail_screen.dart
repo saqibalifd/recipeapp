@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:recipeapp/constants/app_images.dart';
+import 'package:get/get.dart';
+import 'package:recipeapp/models/recipies_model.dart';
 
 class DetailScreen extends StatefulWidget {
   const DetailScreen({super.key});
@@ -14,6 +15,8 @@ class _DetailScreenState extends State<DetailScreen> {
     final theme = Theme.of(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+
+    final RecipeModel argument = Get.arguments;
     return Scaffold(
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
@@ -29,11 +32,11 @@ class _DetailScreenState extends State<DetailScreen> {
               Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  child: Image.asset(
+                  child: Image.network(
                     height: screenHeight * .23,
                     width: screenWidth * .85,
                     fit: BoxFit.cover,
-                    AppImages.dummyImage1,
+                    argument.image,
                   ),
                 ),
               ),
@@ -44,7 +47,7 @@ class _DetailScreenState extends State<DetailScreen> {
                 child: Divider(),
               ),
               Text(
-                'Cacao Maca Wainut Milk',
+                argument.title,
                 style: theme.textTheme.headlineMedium,
               ),
               Padding(
@@ -60,7 +63,7 @@ class _DetailScreenState extends State<DetailScreen> {
               Padding(
                 padding: EdgeInsets.symmetric(vertical: screenHeight * .02),
                 child: Text(
-                  'your recipies are vary famous you can use it in your daily meals like brakefast etc',
+                  argument.description,
                   style: theme.textTheme.bodySmall,
                 ),
               )

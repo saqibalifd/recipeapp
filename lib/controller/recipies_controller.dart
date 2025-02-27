@@ -5,31 +5,26 @@ import 'package:recipeapp/models/recipies_model.dart';
 class RecipiesController extends GetxController {
   RxBool isLoading = false.obs;
   final _firestore = FirebaseFirestore.instance;
-  RxList<RecipeModel> fastFoodDataList = <RecipeModel>[].obs;
-  RxList<RecipeModel> drinkDataList = <RecipeModel>[].obs;
+  RxList<RecipeModel> recipiesDataList = <RecipeModel>[].obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchRecipies(); // Call API or initialize data
+  }
 
   Future<void> fetchRecipies() async {
     isLoading.value = true;
 
     try {
-      QuerySnapshot fastFoodSnapshot = await _firestore
-          .collection('recipes')
-          .where('category', isEqualTo: 'Fast Food')
-          .get();
-      QuerySnapshot drinkSnapshot = await _firestore
-          .collection('recipes')
-          .where('category', isEqualTo: 'Drink')
-          .get();
+      QuerySnapshot fetchRecipies =
+          await _firestore.collection('recipes').get();
 
-      List<RecipeModel> fetchedFastFood = fastFoodSnapshot.docs.map((doc) {
-        return RecipeModel.fromFirestore(doc.data() as Map<String, dynamic>);
-      }).toList();
-      List<RecipeModel> fetchedDrink = drinkSnapshot.docs.map((doc) {
+      List<RecipeModel> data = fetchRecipies.docs.map((doc) {
         return RecipeModel.fromFirestore(doc.data() as Map<String, dynamic>);
       }).toList();
 
-      fastFoodDataList.assignAll(fetchedFastFood);
-      drinkDataList.assignAll(fetchedDrink);
+      recipiesDataList.assignAll(data);
     } catch (e) {
       print("Error fetching recipes: $e");
     } finally {

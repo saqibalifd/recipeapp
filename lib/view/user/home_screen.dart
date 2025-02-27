@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:recipeapp/constants/app_icons.dart';
 import 'package:recipeapp/controller/recipies_controller.dart';
+import 'package:recipeapp/controller/theme_controller.dart';
+import 'package:recipeapp/models/recipies_model.dart';
 import 'package:recipeapp/view/user/detail_screen.dart';
 import 'package:recipeapp/widgets/card/product_card.dart';
 
@@ -23,22 +25,25 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     recipiesController.fetchRecipies();
   }
 
+  ThemeController themeController = Get.put(ThemeController());
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
 
-    // List fastFoodList =
-    //     foodList.where((item) => item['category'] == 'Fast Food').toList();
-    // List drinkList =
-    //     foodList.where((item) => item['category'] == 'Drink').toList();
-
+    List<RecipeModel> fastFoodList = recipiesController.recipiesDataList
+        .where((item) => item.category == 'Fast Food')
+        .toList();
+    List<RecipeModel> drinkList = recipiesController.recipiesDataList
+        .where((item) => item.category == 'Drink')
+        .toList();
     return Scaffold(
       appBar: AppBar(
         title: Text('Home'),
         actions: [
           IconButton(
               onPressed: () {
-                recipiesController.fetchRecipies();
+                themeController.switchTheme();
               },
               icon: Icon(AppIcons.theme))
         ],
@@ -72,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   if (recipiesController.isLoading.value) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  if (recipiesController.fastFoodDataList.isEmpty) {
+                  if (recipiesController.recipiesDataList.isEmpty) {
                     return const Center(child: Text('No recipes found.'));
                   }
                   return GridView.builder(
@@ -81,17 +86,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       crossAxisCount: 2,
                       childAspectRatio: .8,
                     ),
-                    itemCount: recipiesController.fastFoodDataList.length,
+                    itemCount: fastFoodList.length,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
-                      final recipe = recipiesController.fastFoodDataList[index];
+                      final data = fastFoodList[index];
                       return GestureDetector(
-                        onTap: () => Get.to(() => DetailScreen()),
+                        onTap: () {
+                          RecipeModel recipeModel = RecipeModel(
+                              docId: data.docId,
+                              category: data.category,
+                              title: data.title,
+                              description: data.description,
+                              image: data.image,
+                              time: data.time);
+                          Get.to(() => DetailScreen(), arguments: recipeModel);
+                        },
                         child: ProductCard(
-                          productImage: recipe.image,
-                          title: recipe.title,
-                          category: recipe.category,
-                          time: recipe.time,
+                          productImage: data.image,
+                          title: data.title,
+                          category: data.category,
+                          time: data.time,
                         ),
                       );
                     },
@@ -101,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   if (recipiesController.isLoading.value) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  if (recipiesController.fastFoodDataList.isEmpty) {
+                  if (recipiesController.recipiesDataList.isEmpty) {
                     return const Center(child: Text('No recipes found.'));
                   }
                   return GridView.builder(
@@ -110,17 +124,27 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       crossAxisCount: 2,
                       childAspectRatio: .8,
                     ),
-                    itemCount: recipiesController.drinkDataList.length,
+                    itemCount: drinkList.length,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
-                      final recipe = recipiesController.drinkDataList[index];
+                      final data = drinkList[index];
+
                       return GestureDetector(
-                        onTap: () => Get.to(() => DetailScreen()),
+                        onTap: () {
+                          RecipeModel recipeModel = RecipeModel(
+                              docId: data.docId,
+                              category: data.category,
+                              title: data.title,
+                              description: data.description,
+                              image: data.image,
+                              time: data.time);
+                          Get.to(() => DetailScreen(), arguments: recipeModel);
+                        },
                         child: ProductCard(
-                          productImage: recipe.image,
-                          title: recipe.title,
-                          category: recipe.category,
-                          time: recipe.time,
+                          productImage: data.image,
+                          title: data.title,
+                          category: data.category,
+                          time: data.time,
                         ),
                       );
                     },
