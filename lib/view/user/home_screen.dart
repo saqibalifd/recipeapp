@@ -43,7 +43,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         actions: [
           IconButton(
               onPressed: () {
-                themeController.switchTheme();
+                // themeController.switchTheme();
+                recipiesController.fetchRecipies();
               },
               icon: Icon(AppIcons.theme))
         ],

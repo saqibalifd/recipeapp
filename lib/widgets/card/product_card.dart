@@ -1,5 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:recipeapp/constants/app_colors.dart';
+import 'package:recipeapp/constants/app_icons.dart';
 
 class ProductCard extends StatelessWidget {
   final String productImage;
@@ -27,11 +30,19 @@ class ProductCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(15),
               child: Stack(
                 children: [
-                  Image.network(
-                      fit: BoxFit.cover,
-                      height: screenHeight * .18,
-                      width: screenWidth * .4,
-                      productImage),
+                  CachedNetworkImage(
+                    imageUrl: productImage,
+                    placeholder: (context, url) => CupertinoActivityIndicator(
+                      radius: 25,
+                    ),
+                    errorWidget: (context, url, error) => Icon(
+                      AppIcons.brokenImage,
+                      size: 70,
+                    ),
+                    fit: BoxFit.cover,
+                    height: screenHeight * .18,
+                    width: screenWidth * .4,
+                  ),
                   Container(
                     height: screenHeight * .18,
                     width: screenWidth * .4,
