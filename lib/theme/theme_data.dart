@@ -19,8 +19,10 @@ class AppTheme {
     listTileTheme: const ListTileThemeData(
         iconColor: AppColors.greyColor, textColor: AppColors.greyColor),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: AppColors.greenColor,
+      backgroundColor: AppColors.blackColor,
       foregroundColor: AppColors.greyColor,
+      shape:
+          CircleBorder(side: BorderSide(color: AppColors.greenColor, width: 2)),
     ),
     iconTheme: const IconThemeData(color: AppColors.greyColor),
     inputDecorationTheme: InputDecorationTheme(
@@ -84,8 +86,10 @@ class AppTheme {
     listTileTheme: const ListTileThemeData(
         iconColor: AppColors.whiteColor, textColor: AppColors.whiteColor),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: AppColors.greenColor,
-      foregroundColor: AppColors.whiteColor,
+      backgroundColor: AppColors.whiteColor,
+      foregroundColor: AppColors.greyColor,
+      shape:
+          CircleBorder(side: BorderSide(color: AppColors.redColor, width: 2)),
     ),
     iconTheme: const IconThemeData(color: AppColors.whiteColor),
     inputDecorationTheme: InputDecorationTheme(

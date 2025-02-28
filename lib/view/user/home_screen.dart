@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:recipeapp/constants/app_colors.dart';
 import 'package:recipeapp/constants/app_icons.dart';
 import 'package:recipeapp/controller/recipies_controller.dart';
 import 'package:recipeapp/controller/theme_controller.dart';
 import 'package:recipeapp/models/recipies_model.dart';
+import 'package:recipeapp/view/user/add_recipie_screen.dart';
 import 'package:recipeapp/view/user/detail_screen.dart';
 import 'package:recipeapp/widgets/card/product_card.dart';
 
@@ -37,6 +39,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     List<RecipeModel> drinkList = recipiesController.recipiesDataList
         .where((item) => item.category == 'Drink')
         .toList();
+
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Home'),
@@ -155,6 +159,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           )
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Get.to(() => AddRecipieScreen());
+        },
+        child: Icon(
+          AppIcons.add,
+          color: theme.primaryColor,
+        ),
       ),
     );
   }
