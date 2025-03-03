@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:recipeapp/constants/app_colors.dart';
 import 'package:recipeapp/constants/app_icons.dart';
 import 'package:recipeapp/controller/recipies_controller.dart';
 import 'package:recipeapp/controller/theme_controller.dart';

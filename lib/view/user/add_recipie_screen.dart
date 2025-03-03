@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:recipeapp/constants/app_icons.dart';
-import 'package:recipeapp/constants/app_images.dart';
+import 'package:recipeapp/controller/recipies_controller.dart';
 import 'package:recipeapp/view/user/home_screen.dart';
 import 'package:recipeapp/widgets/field/custom_textfield_widget.dart';
 
@@ -17,6 +17,7 @@ class _AddRecipieScreenState extends State<AddRecipieScreen> {
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController timeController = TextEditingController();
   final TextEditingController categoryController = TextEditingController();
+  final RecipiesController recipiesController = Get.put(RecipiesController());
 
   @override
   Widget build(BuildContext context) {
@@ -44,20 +45,22 @@ class _AddRecipieScreenState extends State<AddRecipieScreen> {
                           color: Colors.amber,
                           borderRadius: BorderRadius.circular(8)),
                       child: Image.asset(
-                        AppImages.dummyImage2,
-                        fit: BoxFit.cover,
-                      )),
+                          recipiesController.selectedImage.toString())),
                   Container(
-                    height: screenHeight * .2,
-                    width: screenWidth * .9,
-                    decoration: BoxDecoration(
-                        color: theme.primaryColor.withOpacity(.5),
-                        borderRadius: BorderRadius.circular(8)),
-                    child: Icon(
-                      AppIcons.addImage,
-                      size: 70,
-                    ),
-                  ),
+                      height: screenHeight * .2,
+                      width: screenWidth * .9,
+                      decoration: BoxDecoration(
+                          color: theme.primaryColor.withOpacity(.5),
+                          borderRadius: BorderRadius.circular(8)),
+                      child: IconButton(
+                        onPressed: () {
+                          recipiesController.pickImage();
+                        },
+                        icon: Icon(
+                          AppIcons.addImage,
+                          size: 70,
+                        ),
+                      )),
                 ],
               ),
               SizedBox(
@@ -88,7 +91,7 @@ class _AddRecipieScreenState extends State<AddRecipieScreen> {
                     minimumSize:
                         WidgetStatePropertyAll(Size(screenWidth / 1.2, 80)),
                   ),
-                  onPressed: () async {
+                  onPressed: () {
                     Get.offAll(() => HomeScreen());
                   },
                   child: Text('Upload'))
