@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:recipeapp/constants/app_icons.dart';
@@ -17,7 +18,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final RecipiesController recipiesController = Get.put(RecipiesController());
-
+  final ThemeController themeController = Get.put(ThemeController());
   late TabController tabController;
   @override
   void initState() {
@@ -25,8 +26,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     tabController = TabController(length: 2, vsync: this);
     recipiesController.fetchRecipies();
   }
-
-  ThemeController themeController = Get.put(ThemeController());
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         actions: [
           IconButton(
               onPressed: () {
-                recipiesController.fetchRecipies();
+                themeController.switchTheme();
               },
               icon: Icon(AppIcons.theme))
         ],
@@ -78,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               children: [
                 Obx(() {
                   if (recipiesController.fetchLoading.value) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(child: CupertinoActivityIndicator());
                   }
                   if (recipiesController.recipiesDataList.isEmpty) {
                     return const Center(child: Text('No recipes found.'));
@@ -116,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 }),
                 Obx(() {
                   if (recipiesController.fetchLoading.value) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(child: CupertinoActivityIndicator());
                   }
                   if (recipiesController.recipiesDataList.isEmpty) {
                     return const Center(child: Text('No recipes found.'));

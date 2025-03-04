@@ -19,13 +19,15 @@ void main() async {
 class MyApp extends StatelessWidget {
   MyApp({super.key});
   final ThemeController themeController = Get.put(ThemeController());
+  final box = GetStorage();
   @override
   Widget build(BuildContext context) {
+    final bool isDarkMode = box.read('isDarkMode');
     return GetMaterialApp(
         title: 'Recipies app',
         darkTheme: AppTheme.darkTheme,
         theme: AppTheme.lightTheme,
-        themeMode: ThemeMode.dark,
+        themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
         debugShowCheckedModeBanner: false,
         home: OnBoardingScreen());
   }

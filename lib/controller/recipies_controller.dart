@@ -13,7 +13,8 @@ class RecipiesController extends GetxController {
   final _firestore = FirebaseFirestore.instance;
   RxList<RecipeModel> recipiesDataList = <RecipeModel>[].obs;
   Rx<File?> slectedImage = Rx<File?>(null);
-  ImagePicker _picker = ImagePicker();
+  final ImagePicker _picker = ImagePicker();
+  RxString selectedCategory = "Fast Food".obs;
 
   @override
   void onInit() {
@@ -59,34 +60,38 @@ class RecipiesController extends GetxController {
   }
 
   Future addRecipie(
-      TextEditingController categoryController,
-      TextEditingController titleController,
-      TextEditingController desciptionController,
-      TextEditingController timeController) async {
-    try {
-      uploadLoading.value = true;
-      DocumentReference docRef = _firestore.collection('recipes').doc();
+    TextEditingController titleController,
+    TextEditingController desciptionController,
+    TextEditingController timeController,
+    formkey,
+  ) async {
+    if (formkey.currentState!.validate()) {
+      try {
+        uploadLoading.value = true;
+        DocumentReference docRef = _firestore.collection('recipes').doc();
 
-      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      Reference storageRef =
-          FirebaseStorage.instance.ref().child("images/$fileName.jpg");
-      UploadTask uploadTask = storageRef.putFile(slectedImage.value!);
-      TaskSnapshot taskSnapshot = await uploadTask;
-      String downloadURL = await taskSnapshot.ref.getDownloadURL();
+        String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+        Reference storageRef =
+            FirebaseStorage.instance.ref().child("images/$fileName.jpg");
+        UploadTask uploadTask = storageRef.putFile(slectedImage.value!);
+        TaskSnapshot taskSnapshot = await uploadTask;
+        String downloadURL = await taskSnapshot.ref.getDownloadURL();
 
-      RecipeModel recipeModel = RecipeModel(
-          docId: docRef.id.toString(),
-          category: categoryController.text.toString(),
-          title: titleController.text.toString(),
-          description: desciptionController.text.toString(),
-          image: downloadURL.toString(),
-          time: timeController.text.toString());
+        RecipeModel recipeModel = RecipeModel(
+            docId: docRef.id.toString(),
+            category: selectedCategory.toString(),
+            title: titleController.text.toString(),
+            description: desciptionController.text.toString(),
+            image: downloadURL.toString(),
+            time: timeController.text.toString() + ' min'.toString());
 
-      await docRef.set(recipeModel.toFirestore());
-    } catch (e) {
-      Get.snackbar('Error', 'Something went wrong');
-    } finally {
-      uploadLoading.value = false;
+        await docRef.set(recipeModel.toFirestore());
+      } catch (e) {
+        Get.snackbar('Error', 'Something went wrong');
+      } finally {
+        uploadLoading.value = false;
+      }
     }
+    return null;
   }
 }
