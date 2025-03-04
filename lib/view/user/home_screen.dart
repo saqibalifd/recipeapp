@@ -46,7 +46,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         actions: [
           IconButton(
               onPressed: () {
-                // themeController.switchTheme();
                 recipiesController.fetchRecipies();
               },
               icon: Icon(AppIcons.theme))
@@ -78,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               controller: tabController,
               children: [
                 Obx(() {
-                  if (recipiesController.isLoading.value) {
+                  if (recipiesController.fetchLoading.value) {
                     return const Center(child: CircularProgressIndicator());
                   }
                   if (recipiesController.recipiesDataList.isEmpty) {
@@ -116,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   );
                 }),
                 Obx(() {
-                  if (recipiesController.isLoading.value) {
+                  if (recipiesController.fetchLoading.value) {
                     return const Center(child: CircularProgressIndicator());
                   }
                   if (recipiesController.recipiesDataList.isEmpty) {

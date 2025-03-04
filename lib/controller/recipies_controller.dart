@@ -1,20 +1,28 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:recipeapp/models/recipies_model.dart';
 
 class RecipiesController extends GetxController {
-  RxBool isLoading = false.obs;
+  RxBool fetchLoading = false.obs;
+  RxBool uploadLoading = false.obs;
   final _firestore = FirebaseFirestore.instance;
   RxList<RecipeModel> recipiesDataList = <RecipeModel>[].obs;
+  Rx<File?> slectedImage = Rx<File?>(null);
+  ImagePicker _picker = ImagePicker();
 
   @override
   void onInit() {
     super.onInit();
-    fetchRecipies(); // Call API or initialize data
+    fetchRecipies();
   }
 
   Future<void> fetchRecipies() async {
-    isLoading.value = true;
+    fetchLoading.value = true;
 
     try {
       QuerySnapshot fetchRecipies =
@@ -28,7 +36,57 @@ class RecipiesController extends GetxController {
     } catch (e) {
       print("Error fetching recipes: $e");
     } finally {
-      isLoading.value = false;
+      fetchLoading.value = false;
+    }
+  }
+
+  Future pickGalleryImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      slectedImage.value = File(pickedFile.path);
+    } else {
+      Get.snackbar('Warning', 'Please pick image first');
+    }
+  }
+
+  Future pickCameraImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+    if (pickedFile != null) {
+      slectedImage.value = File(pickedFile.path);
+    } else {
+      Get.snackbar('Warning', 'Please pick image first');
+    }
+  }
+
+  Future addRecipie(
+      TextEditingController categoryController,
+      TextEditingController titleController,
+      TextEditingController desciptionController,
+      TextEditingController timeController) async {
+    try {
+      uploadLoading.value = true;
+      DocumentReference docRef = _firestore.collection('recipes').doc();
+
+      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      Reference storageRef =
+          FirebaseStorage.instance.ref().child("images/$fileName.jpg");
+      UploadTask uploadTask = storageRef.putFile(slectedImage.value!);
+      TaskSnapshot taskSnapshot = await uploadTask;
+      String downloadURL = await taskSnapshot.ref.getDownloadURL();
+
+      RecipeModel recipeModel = RecipeModel(
+          docId: docRef.id.toString(),
+          category: categoryController.text.toString(),
+          title: titleController.text.toString(),
+          description: desciptionController.text.toString(),
+          image: downloadURL.toString(),
+          time: timeController.text.toString());
+
+      await docRef.set(recipeModel.toFirestore());
+    } catch (e) {
+      Get.snackbar('Error', 'Something went wrong');
+    } finally {
+      uploadLoading.value = false;
     }
   }
 }

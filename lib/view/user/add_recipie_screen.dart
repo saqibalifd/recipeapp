@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:recipeapp/constants/app_icons.dart';
 import 'package:recipeapp/controller/recipies_controller.dart';
-import 'package:recipeapp/view/user/home_screen.dart';
+import 'package:recipeapp/widgets/button/custom_button_widget.dart';
 import 'package:recipeapp/widgets/field/custom_textfield_widget.dart';
 
 class AddRecipieScreen extends StatefulWidget {
@@ -45,7 +45,7 @@ class _AddRecipieScreenState extends State<AddRecipieScreen> {
                           color: Colors.amber,
                           borderRadius: BorderRadius.circular(8)),
                       child: Image.asset(
-                          recipiesController.selectedImage.toString())),
+                          recipiesController.slectedImage.toString())),
                   Container(
                       height: screenHeight * .2,
                       width: screenWidth * .9,
@@ -54,7 +54,7 @@ class _AddRecipieScreenState extends State<AddRecipieScreen> {
                           borderRadius: BorderRadius.circular(8)),
                       child: IconButton(
                         onPressed: () {
-                          recipiesController.pickImage();
+                          bottomsheet();
                         },
                         icon: Icon(
                           AppIcons.addImage,
@@ -86,17 +86,50 @@ class _AddRecipieScreenState extends State<AddRecipieScreen> {
               SizedBox(
                 height: screenHeight * .1,
               ),
-              ElevatedButton(
-                  style: ButtonStyle(
-                    minimumSize:
-                        WidgetStatePropertyAll(Size(screenWidth / 1.2, 80)),
-                  ),
-                  onPressed: () {
-                    Get.offAll(() => HomeScreen());
-                  },
-                  child: Text('Upload'))
+              Obx(
+                () => CustomButton(
+                    text: 'Upload',
+                    isloading: recipiesController.uploadLoading.value,
+                    onPressed: () => recipiesController.addRecipie(
+                        categoryController,
+                        nameController,
+                        descriptionController,
+                        timeController)),
+              )
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  void bottomsheet() {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Get.isDarkMode ? Colors.grey[900] : Colors.white,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+        ),
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt, color: Colors.blue),
+              title: const Text("Take a photo"),
+              onTap: () async {
+                recipiesController.pickCameraImage();
+                Get.back();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library, color: Colors.green),
+              title: const Text("Choose from gallery"),
+              onTap: () async {
+                recipiesController.pickGalleryImage();
+                Get.back();
+              },
+            ),
+          ],
         ),
       ),
     );
