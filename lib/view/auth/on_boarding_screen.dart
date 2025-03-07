@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:recipeapp/constants/app_images.dart';
 import 'package:recipeapp/view/user/home_screen.dart';
+import 'package:recipeapp/widgets/button/custom_button_widget.dart';
 
 class OnBoardingScreen extends StatefulWidget {
   const OnBoardingScreen({super.key});
@@ -14,7 +15,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
@@ -42,15 +42,12 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 style: theme.textTheme.bodyMedium,
               ),
             ),
-            ElevatedButton(
-                style: ButtonStyle(
-                  minimumSize:
-                      WidgetStatePropertyAll(Size(screenWidth / 1.2, 80)),
-                ),
-                onPressed: () async {
-                  Get.offAll(() => HomeScreen());
-                },
-                child: Text('Get Started'))
+            CustomButton(
+              text: 'Get Started',
+              onPressed: () async {
+                Get.offAll(() => HomeScreen());
+              },
+            )
           ],
         ),
       ),

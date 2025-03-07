@@ -10,4 +10,5 @@ class AppImages {
   static const String dummyImage6 = 'assets/images/banan juice.jpeg';
   static const String dummyImage7 = 'assets/images/lemonjuice.jpeg';
   static const String dummyImage8 = 'assets/images/orangejuice.jpeg';
+  static const String noImageSlected = 'assets/images/noImageSlected.svg';
 }

@@ -20,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final RecipiesController recipiesController = Get.put(RecipiesController());
   final ThemeController themeController = Get.put(ThemeController());
   late TabController tabController;
+
   @override
   void initState() {
     super.initState();
@@ -30,13 +31,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-
-    List<RecipeModel> fastFoodList = recipiesController.recipiesDataList
-        .where((item) => item.category == 'Fast Food')
-        .toList();
-    List<RecipeModel> drinkList = recipiesController.recipiesDataList
-        .where((item) => item.category == 'Drink')
-        .toList();
 
     final theme = Theme.of(context);
     return Scaffold(
@@ -82,6 +76,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   if (recipiesController.recipiesDataList.isEmpty) {
                     return const Center(child: Text('No recipes found.'));
                   }
+                  List<RecipeModel> fastFoodList = recipiesController
+                      .recipiesDataList
+                      .where((item) => item.category == 'Fast Food')
+                      .toList();
                   return GridView.builder(
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
@@ -120,6 +118,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   if (recipiesController.recipiesDataList.isEmpty) {
                     return const Center(child: Text('No recipes found.'));
                   }
+                  List<RecipeModel> drinkList = recipiesController
+                      .recipiesDataList
+                      .where((item) => item.category == 'Drink')
+                      .toList();
                   return GridView.builder(
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(

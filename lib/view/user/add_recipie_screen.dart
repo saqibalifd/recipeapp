@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:recipeapp/constants/app_colors.dart';
 import 'package:recipeapp/constants/app_icons.dart';
 import 'package:recipeapp/constants/app_images.dart';
 import 'package:recipeapp/controller/recipies_controller.dart';
@@ -29,125 +30,124 @@ class _AddRecipieScreenState extends State<AddRecipieScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: screenWidth * .05),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: screenHeight * .1,
-                ),
-                Stack(
-                  children: [
-                    Obx(() => Container(
+      body: AbsorbPointer(
+        absorbing: recipiesController.uploadLoading.value,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * .05),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: screenHeight * .1,
+                  ),
+                  Stack(
+                    children: [
+                      Obx(() => Container(
                           height: screenHeight * .2,
                           width: screenWidth * .9,
                           decoration: BoxDecoration(
-                              color: Colors.amber,
+                              color: AppColors.greyColor,
                               borderRadius: BorderRadius.circular(8)),
                           child: recipiesController.slectedImage.value != null
                               ? Image.file(
                                   recipiesController.slectedImage.value!,
                                   fit: BoxFit.cover,
                                 )
-                              : Image.asset(
-                                  AppImages.dummyImage1,
-                                  fit: BoxFit.cover,
-                                ),
-                        )),
-                    Container(
-                        height: screenHeight * .2,
-                        width: screenWidth * .9,
+                              : SizedBox())),
+                      Container(
+                          height: screenHeight * .2,
+                          width: screenWidth * .9,
+                          decoration: BoxDecoration(
+                              color: theme.primaryColor.withOpacity(.5),
+                              borderRadius: BorderRadius.circular(8)),
+                          child: IconButton(
+                            onPressed: () {
+                              bottomsheet();
+                            },
+                            icon: Icon(
+                              AppIcons.addImage,
+                              size: 70,
+                            ),
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: screenHeight * .1,
+                  ),
+                  Obx(() => Container(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
                         decoration: BoxDecoration(
-                            color: theme.primaryColor.withOpacity(.5),
-                            borderRadius: BorderRadius.circular(8)),
-                        child: IconButton(
-                          onPressed: () {
-                            bottomsheet();
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: DropdownButton<String>(
+                          value: recipiesController.selectedCategory.value,
+                          isExpanded: true,
+                          underline: SizedBox(),
+                          items: ["Fast Food", "Drink"]
+                              .map((category) => DropdownMenuItem<String>(
+                                    value: category,
+                                    child: Text(category),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            recipiesController.selectedCategory.value = value!;
                           },
-                          icon: Icon(
-                            AppIcons.addImage,
-                            size: 70,
-                          ),
-                        )),
-                  ],
-                ),
-                SizedBox(
-                  height: screenHeight * .1,
-                ),
-                Obx(() => Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: DropdownButton<String>(
-                        value: recipiesController.selectedCategory.value,
-                        isExpanded: true,
-                        underline: SizedBox(),
-                        items: ["Fast Food", "Drink"]
-                            .map((category) => DropdownMenuItem<String>(
-                                  value: category,
-                                  child: Text(category),
-                                ))
-                            .toList(),
-                        onChanged: (value) {
-                          recipiesController.selectedCategory.value = value!;
+                        ),
+                      )),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: screenHeight * .01),
+                    child: CustomTextField(
+                        keyboardType: TextInputType.number,
+                        validate: (value) {
+                          if (value == '' || value == null) {
+                            return 'Please enter cocking time';
+                          }
+                          return null;
                         },
-                      ),
-                    )),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: screenHeight * .01),
-                  child: CustomTextField(
-                      keyboardType: TextInputType.number,
+                        textEditingController: timeController,
+                        hint: 'Recipie Time'),
+                  ),
+                  CustomTextField(
                       validate: (value) {
                         if (value == '' || value == null) {
-                          return 'Please enter cocking time';
+                          return 'Please enter recipie name';
                         }
                         return null;
                       },
-                      textEditingController: timeController,
-                      hint: 'Recipie Time'),
-                ),
-                CustomTextField(
-                    validate: (value) {
-                      if (value == '' || value == null) {
-                        return 'Please enter recipie name';
-                      }
-                      return null;
-                    },
-                    textEditingController: nameController,
-                    hint: 'Recipie Name'),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: screenHeight * .01),
-                  child: CustomTextField(
-                      validate: (value) {
-                        if (value == '' || value == null) {
-                          return 'Please enter details';
-                        }
-                        return null;
-                      },
-                      textEditingController: descriptionController,
-                      hint: 'Recipie Detail'),
-                ),
-                SizedBox(
-                  height: screenHeight * .1,
-                ),
-                Obx(
-                  () => CustomButton(
-                      text: 'Upload',
-                      isloading: recipiesController.uploadLoading.value,
-                      onPressed: () {
-                        recipiesController.addRecipie(nameController,
-                            descriptionController, timeController, _formKey);
-                        recipiesController.fetchRecipies();
-                      }),
-                )
-              ],
+                      textEditingController: nameController,
+                      hint: 'Recipie Name'),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: screenHeight * .01),
+                    child: CustomTextField(
+                        validate: (value) {
+                          if (value == '' || value == null) {
+                            return 'Please enter details';
+                          }
+                          return null;
+                        },
+                        textEditingController: descriptionController,
+                        hint: 'Recipie Detail'),
+                  ),
+                  SizedBox(
+                    height: screenHeight * .1,
+                  ),
+                  Obx(
+                    () => CustomButton(
+                        text: 'Upload',
+                        isloading: recipiesController.uploadLoading.value,
+                        onPressed: () {
+                          recipiesController.addRecipie(nameController,
+                              descriptionController, timeController, _formKey);
+                          recipiesController.fetchRecipies();
+                        }),
+                  )
+                ],
+              ),
             ),
           ),
         ),

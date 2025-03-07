@@ -86,6 +86,7 @@ class RecipiesController extends GetxController {
             time: timeController.text.toString() + ' min'.toString());
 
         await docRef.set(recipeModel.toFirestore());
+        Get.back();
       } catch (e) {
         Get.snackbar('Error', 'Something went wrong');
       } finally {

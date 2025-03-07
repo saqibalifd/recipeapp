@@ -33,7 +33,7 @@ class ProductCard extends StatelessWidget {
                   CachedNetworkImage(
                     imageUrl: productImage,
                     placeholder: (context, url) => CupertinoActivityIndicator(
-                      radius: 25,
+                      radius: 10,
                     ),
                     errorWidget: (context, url, error) => Icon(
                       AppIcons.brokenImage,
